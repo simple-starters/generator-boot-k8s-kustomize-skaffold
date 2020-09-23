@@ -1,0 +1,26 @@
+---
+actions:
+  to: kubernetes/overlays/local/deployment-patch.yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app # Comes from https://github.com/kustomizations/spring-boot-web/blob/master/deployment.yaml
+spec:
+  template:
+    spec:
+      containers:
+      - name: app # Comes from https://github.com/kustomizations/spring-boot-web/blob/master/deployment.yaml
+        env:
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql
+                key: mysql-password
+        volumeMounts:
+          - name: config-volume
+            mountPath: /config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: spring-configmap

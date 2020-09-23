@@ -1,0 +1,46 @@
+---
+actions:
+  to: skaffold.yaml
+---
+apiVersion: skaffold/v2beta6
+kind: Config
+profiles:
+  - name: local
+    build:
+      artifacts:
+        - image: {{artifactId}}
+          jib:
+            type: maven
+            args:
+              - -Plocal
+#          buildpack:
+#            builder: "cloudfoundry/cnb:cflinuxfs3"
+      tagPolicy:
+        sha256: {}
+      local:
+        push: false
+    deploy:
+      kustomize:
+        paths:
+          - kubernetes/overlays/local
+#
+# Will be using k8s yaml files for services
+#
+  - name: local-services
+    deploy:
+      kustomize:
+        paths:
+          - kubernetes/overlays/local-services/mysql
+#
+# Will be using Helm charts for services
+#
+  - name: local-services-helm
+    deploy:
+      helm:
+        releases:
+        - name: mysql
+          chartPath:
+            bitnami/mysql
+          remote: true
+          setValues:
+            db.user: springuser

@@ -1,0 +1,9 @@
+---
+actions:
+  to: kubernetes/overlays/base/kustomization.yaml
+---
+namePrefix: {{artifactId}}-
+commonLabels:
+  app.kubernetes.io/name: {{artifactId}}
+resources:
+  - github.com/kustomizations/spring-boot-web

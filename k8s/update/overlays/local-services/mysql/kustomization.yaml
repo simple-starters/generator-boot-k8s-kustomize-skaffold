@@ -1,0 +1,10 @@
+---
+conditional:
+  onDependency: mysql-connector-java
+actions:
+  to: kubernetes/overlays/local-services/mysql/kustomization.yaml
+---
+commonLabels:
+  app.kubernetes.io/name: mysql
+resources:
+  - github.com/kustomizations/mysql/local

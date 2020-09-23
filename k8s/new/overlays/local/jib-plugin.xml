@@ -1,0 +1,73 @@
+---
+actions:
+  injectMavenPlugin:
+    to: pom.xml
+    skip: jib-maven-plugin
+---
+{{#containsProfilesSection}}
+    <profile>
+        <id>local</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>1.4.0</version>
+                    <configuration>
+                        <container>
+                            <useCurrentTimestamp>true</useCurrentTimestamp>
+                        </container>
+                        <to>
+                            <image>{{artifactId}}</image>
+                            <tags>
+                                <tag>latest</tag>
+                                <tag>{{mavenModel.version}}</tag>
+                            </tags>
+                        </to>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>dockerBuild</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+{{/containsProfilesSection}}
+{{^containsProfilesSection}}
+    <profiles>
+      <profile>
+        <id>local</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>1.4.0</version>
+                    <configuration>
+                        <container>
+                            <useCurrentTimestamp>true</useCurrentTimestamp>
+                        </container>
+                        <to>
+                            <image>{{artifactId}}</image>
+                            <tags>{{mavenModel.version}}</tags>
+                        </to>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>dockerBuild</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+      </profile>
+    </profiles>
+{{/containsProfilesSection}}
