@@ -43,4 +43,4 @@ profiles:
             bitnami/mysql
           remote: true
           setValues:
-            db.user: springuser
+            auth.username: springuser
