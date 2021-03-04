@@ -14,59 +14,78 @@ If you want to use Helm to deploy services, install it's CLI
 
 If you used the starter service, then the generator has already been executed and you can immediately deploy the application's required services and then build and deploy the application.
 
-## Deploy required services
+## Local Services
 
-If your application needs services such as a Database or Message Queue, this section shows you how to deploy these services to Kubernetes.
+### MySQL
 
-For MySQL, you have two deployment options, pick one.
+If your app depends on a MySQL database, then you must first create a database server instance.
 
-### Option 1:  MySQL using simple deployment/service YAML
+You have two options for this, either using Helm or the Kustomize configuration provided in the `local-services` profile.
 
-**Step 1:** Create a secret:
+Using Kustomize run:
 
-```
+```bash
 kubectl create secret generic mysql \
   --from-literal=mysql-root-password=$(echo $RANDOM) \
   --from-literal=mysql-password=$(echo $RANDOM)
+skaffold run -p local-mysql
 ```
 
-**Step 2:** Deploy the service
-
-```
-skaffold run -p local-services
-```
-
-#### Deleting
-
-```bash
-skaffold delete -p local-services
-```
-
-### Option 2: MySQL using Helm
-
-You should have Helm v3 installed.
-
-**Step 1:** Add the Bitnami Helm chart repository to your installation:
+Using Helm v3 run:
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
+skaffold run -p local-mysql-helm
 ```
 
-**Step 2:** Create the service release:
+#### Deleting MySQL
+
+To delete the MySQL service run:
 
 ```bash
-skaffold run -p local-services-helm
+skaffold delete -p local-mysql
 ```
 
-#### Deleting
-
-To delete the service release:
+or, for Helm run:
 
 ```bash
-skaffold delete -p local-services-helm
+skaffold delete -p local-mysql-helm
 ```
 
-### Building and deploying the application
+### Kafka
+
+If your app depends on a Kafka, then you must first create a Kafka cluster.
+
+You have two options for this, either using Helm or the Kustomize configuration provided in the `local-services` profile.
+
+Using Kustomize run:
+
+```bash
+skaffold run -p local-kafka
+```
+
+Using Helm v3 run:
+
+```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
+skaffold run -p local-kafka-helm
+```
+
+#### Deleting Kafka
+
+To delete the Kafka service run:
+
+```bash
+skaffold delete -p local-kafka
+```
+
+or, for Helm run:
+
+```bash
+skaffold delete -p local-kafka-helm
+```
+
+## Building and deploying the application
 
 This generator relies on the [Jib Maven Plugin](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin)
 
@@ -89,7 +108,7 @@ Accessing the application's endpoint varies based on the type of Kubernetes clus
 
 As you make changes to the application, execute the `skaffold run -p local` command to rebuild the container and update the application running in the Kubernetes cluster.
 
-### Deleting
+### Deleting the application
 
 ```bash
 skaffold delete -p local

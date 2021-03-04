@@ -26,15 +26,20 @@ profiles:
 #
 # Will be using k8s yaml files for services
 #
-  - name: local-services
+  - name: local-mysql
     deploy:
       kustomize:
         paths:
           - kubernetes/overlays/local-services/mysql
+  - name: local-kafka
+    deploy:
+      kustomize:
+        paths:
+          - kubernetes/overlays/local-services/kafka
 #
 # Will be using Helm charts for services
 #
-  - name: local-services-helm
+  - name: local-mysql-helm
     deploy:
       helm:
         releases:
@@ -44,3 +49,13 @@ profiles:
           remote: true
           setValues:
             auth.username: springuser
+  - name: local-kafka-helm
+    deploy:
+      helm:
+        releases:
+        - name: kafka
+          chartPath:
+            bitnami/kafka
+          remote: true
+          setValues:
+            serviceAccount.create: false
