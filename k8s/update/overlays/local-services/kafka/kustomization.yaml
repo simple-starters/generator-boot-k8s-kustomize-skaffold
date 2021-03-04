@@ -1,0 +1,10 @@
+---
+conditional:
+  onDependency: spring-kafka
+actions:
+  to: kubernetes/overlays/local-services/kafka/kustomization.yaml
+---
+commonLabels:
+  app.kubernetes.io/name: kafka
+resources:
+  - github.com/kustomizations/kafka/local?ref=main
